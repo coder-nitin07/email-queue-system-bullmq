@@ -17,7 +17,7 @@ const sendEmail = async (req, res)=>{
                 attempts: 3,
                 backoff: { type: 'exponential', delay: 1000 }, // retry delay
                 timeout: 30_000, // 30 seconds max per job
-                removeOnComplete: true, // delete job from Redis if success
+                removeOnComplete:  { age: 600 }, // delete job from Redis if success
                 removeOnFail: false // keep job in Redis if fails
             }
         );

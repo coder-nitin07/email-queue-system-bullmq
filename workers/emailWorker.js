@@ -1,4 +1,4 @@
-const { worker } = require('bullmq');
+const { Worker } = require('bullmq');
 const IORedis = require('ioredis');
 require('dotenv').config();
 

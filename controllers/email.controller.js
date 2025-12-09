@@ -29,4 +29,39 @@ const sendEmail = async (req, res)=>{
     }
 };
 
-module.exports = { sendEmail };
+const getJobStatus = async (req, res)=>{
+    const { id } = req.params;
+
+    try {
+        const job = await emailQueue.getJob(id);
+
+        if(!job){
+            return res.status(404).json({ error: 'Job not found' });
+        }
+
+        const state = await job.getState();
+        const progress = job.progress;
+        const attemptsMade = job.attemptsMade;
+        const failedReason = job.failedReason;
+        const timestamps = {
+            timestamp: job.timestamp,
+            finishedOn: job.finishedOn,
+            processedOn: job.processedOn,
+        };
+
+        res.json({
+            id: job.id,
+            data: job.data,
+            state,
+            progress,
+            attemptsMade,
+            failedReason,
+            timestamps
+        });
+    } catch (err) {
+        console.error('Error fetching job:', err);
+        res.status(500).json({ error: 'Failed to fetch job status' });
+    }
+};
+
+module.exports = { sendEmail, getJobStatus };
